@@ -1,7 +1,10 @@
 # Fullstack Challenge
 
-## Requirements
-Using Laravel and Vue.js, create an application which shows the weather for a set of users. Instructions are purposely left somewhat open-ended to allow the developer to make some of their own decisions on implementation and design. 
+## Goal
+Using Laravel and Vue.js, create an application which shows the weather for a set of users to demonstrate your coding chops.
+
+## Acceptance Criteria
+Instructions are purposely left somewhat open-ended to allow the developer to make some of their own decisions on implementation and design. 
 
 1. Clone this repository (not fork).
 2. Create a branch off of the `main` branch to do your work on.
