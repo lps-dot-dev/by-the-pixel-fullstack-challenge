@@ -12,7 +12,7 @@ Instructions are purposely left somewhat open-ended to allow the developer to ma
    - https://openweathermap.org/api
    - https://www.weather.gov/documentation/services-web-api
 4. Show a list of users and their current weather.
-   - Add twenty randomized users the seeder process, each having their own unique location (longitude and latitude).
+   - Use the twenty randomized users generated from the seeder process, each having their own unique location (longitude and latitude).
    - The weather update should be no older than 1 hour.
 5. Clicking a user should open a modal or screen, which shows that user's detailed weather report.
    - The weather update should be no older than 1 hour.
