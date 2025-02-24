@@ -4,7 +4,7 @@
 Using Laravel and Vue.js, create an application which shows the weather for a set of users to demonstrate your coding chops.
 
 ## Acceptance Criteria
-Instructions are purposely left somewhat open-ended to allow the developer to make some of their own decisions on implementation and design. 
+Instructions are purposely left somewhat open-ended to allow the developer to make some of their own decisions on implementation and design. We have provided some initial scaffolding structure/examples, however feel free to make it your own and remove anything unnecessary.
 
 1. Clone this repository (not fork).
 2. Create a branch off of the `main` branch to do your work on.
