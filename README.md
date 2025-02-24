@@ -4,18 +4,22 @@
 Using Laravel and Vue.js, create an application which shows the weather for a set of users. Instructions are purposely left somewhat open-ended to allow the developer to make some of their own decisions on implementation and design. 
 
 1. Clone this repository (not fork).
-1. Chose your own weather API, such as:
+2. Create a branch off of the `main` branch to do your work on.
+3. Chose your own weather API, such as:
    - https://openweathermap.org/api
    - https://www.weather.gov/documentation/services-web-api
-1. Show a list of users and their current weather.
+4. Show a list of users and their current weather.
    - Add twenty randomized users the seeder process, each having their own unique location (longitude and latitude).
    - The weather update should be no older than 1 hour.
-1. Clicking a user should open a modal or screen, which shows that user's detailed weather report.
+5. Clicking a user should open a modal or screen, which shows that user's detailed weather report.
    - The weather update should be no older than 1 hour.
-1. Internal API request(s) to retrieve weather data should take no longer than 500ms.
+6. Internal API request(s) to retrieve weather data should take no longer than 500ms.
    - Consider that external APIs could and will take longer than this from time to time and should be accounted for.
-1. The availability of external APIs is not guaranteed and should not cause the page to crash.
-1. Once completed, send a link of the clone repository to interviewer and let them know how long the exercise took. 
+7. The availability of external APIs is not guaranteed and should not cause the page to crash.
+
+Once completed:
+1. Open a PR to merge the branch you did your work on into the `main` branch so our team can provide code review comments.
+2. Send a link of your repository to the interviewer and let them know how long the exercise took.
 
 ## Things to consider
 - Redis is available (Docker service) if you wish to use it.
