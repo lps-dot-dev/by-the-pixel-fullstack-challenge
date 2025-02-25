@@ -37,7 +37,7 @@ Once completed:
 - Design patterns
 - This is not a designer test so the frontend does not have to look "good," but of course bonus points if you can make it look appealing.
 
-## To run the local dev environment:
+## To run the local dev environment
 
 ### API
 - Navigate to `/api` folder
