@@ -1,6 +1,6 @@
 <script>
 // Dependencies
-import { getUsers } from '@/service/UserService';
+import { useUserService } from '@/service/UserService';
 import { useWeatherService } from '@/service/WeatherService';
 
 // Components
@@ -24,7 +24,8 @@ export default {
     methods: {
         fetchUsers() {
             this.isLoadingUsers = true;
-            getUsers(this.backendHttpClient)
+            useUserService()
+                .getUsers(this.backendHttpClient)
                 .then(response => {
                     this.users = response;
                 })

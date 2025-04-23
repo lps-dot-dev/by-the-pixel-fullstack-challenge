@@ -1,6 +1,6 @@
 <script>
 // Dependencies
-import { getUsers } from '@/service/UserService';
+import { useUserService } from '@/service/UserService';
 import { useWeatherService } from '@/service/WeatherService';
 
 // Components
@@ -9,15 +9,19 @@ import Skeleton from 'primevue/skeleton';
 export default {
     inject: ['backendHttpClient'],
     data: () => ({
-        failedLoadingUsers: false,
-        isLoadingUsers: false,
         secondsSinceLastUpdate: 3600,
         users: [],
         weather: new Map()
     }),
     computed: {
+        failedLoadingUsers() {
+            return useUserService().errorOccurred.value;
+        },
         failedLoadingWeather() {
             return useWeatherService().errorOccurred.value;
+        },
+        isLoadingUsers() {
+            return useUserService().isLoading.value;
         },
         isLoadingWeather() {
             return useWeatherService().isLoading.value;
@@ -28,18 +32,13 @@ export default {
     },
     methods: {
         fetchUsers() {
-            this.failedLoadingUsers = false;
-            this.isLoadingUsers = true;
-            getUsers(this.backendHttpClient)
+            useUserService()
+                .getUsers(this.backendHttpClient)
                 .then(response => {
                     this.users = response;
                 })
                 .catch(error => {
                     console.error(error);
-                    this.failedLoadingUsers = true;
-                })
-                .finally(() => {
-                    this.isLoadingUsers = false;
                 });
         },
         fetchWeather() {
@@ -55,6 +54,7 @@ export default {
     },
     created() {
         this.fetchUsers();
+        this.fetchWeather();
     }
 };
 </script>

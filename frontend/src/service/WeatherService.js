@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { useWeatherStore } from "../stores/weather";
 
-function useWeatherService() {
+export function useWeatherService() {
     const errorOccurred = ref(false);
     const isLoading = ref(false);
 
@@ -42,5 +42,3 @@ function useWeatherService() {
         getWeather
     };
 }
-
-export { useWeatherService };
