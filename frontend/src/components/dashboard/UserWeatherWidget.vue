@@ -1,31 +1,46 @@
-<script setup>
-import { ProductService } from '@/service/ProductService';
-import { onMounted, ref } from 'vue';
+<script>
+import { getUsers } from '@/service/UserService';
 
-const products = ref(null);
-
-function formatCurrency(value) {
-    return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-}
-
-onMounted(() => {
-    ProductService.getProductsSmall().then((data) => (products.value = data));
-});
+export default {
+    inject: ['backendHttpClient'],
+    data: () => ({
+        isLoadingUsers: false,
+        users: []
+    }),
+    methods: {
+        fetchUsers() {
+            this.isLoadingUsers = true;
+            getUsers(this.backendHttpClient)
+                .then(response => {
+                    this.users = response;
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+                .finally(() => {
+                    this.isLoadingUsers = false;
+                });
+        }
+    },
+    created() {
+        this.fetchUsers();
+    }
+};
 </script>
 
 <template>
     <div class="col-span-12 card">
-        <div class="font-semibold text-xl mb-4">Recent Sales</div>
-        <DataTable :value="products" :rows="5" :paginator="true" responsiveLayout="scroll">
-            <Column style="width: 15%" header="Image">
+        <div class="font-semibold text-xl mb-4">Users</div>
+        <DataTable :value="users" :rows="5" :paginator="true" responsiveLayout="scroll" :loading="isLoadingUsers">
+            <Column field="name" header="Name" :sortable="true" style="width: 35%"></Column>
+            <Column header="Location" :sortable="true" style="width: 35%">
                 <template #body="slotProps">
-                    <img :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" :alt="slotProps.data.image" width="50" class="shadow" />
+                    {{ slotProps.data.latitude }} x {{ slotProps.data.longitude }}
                 </template>
             </Column>
-            <Column field="name" header="Name" :sortable="true" style="width: 35%"></Column>
-            <Column field="price" header="Price" :sortable="true" style="width: 35%">
+            <Column style="width: 15%" header="Weather">
                 <template #body="slotProps">
-                    {{ formatCurrency(slotProps.data.price) }}
+                    70F
                 </template>
             </Column>
             <Column style="width: 15%" header="View">

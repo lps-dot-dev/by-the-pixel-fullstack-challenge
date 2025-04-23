@@ -1,6 +1,5 @@
 <script>
 // Dependencies
-import { inject } from 'vue';
 import { getUsers } from '@/service/UserService';
 
 // Components
