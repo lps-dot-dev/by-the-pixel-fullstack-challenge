@@ -13,7 +13,7 @@
     "@primeuix/themes": "^1.0.3",
     "axios": "^1.8.4",
     "chart.js": "^4.4.9",
-    "laravel-echo": "^2.0.2",
+    "laravel-echo": "^1.19.0",
     "pinia": "^2.0.23",
     "primeicons": "^7.0.0",
     "primevue": "^4.3.3",

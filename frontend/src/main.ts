@@ -9,6 +9,7 @@ import { echo } from "@/service/EchoService";
 import Aura from '@primeuix/themes/aura';
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
+import StyleClass from 'primevue/styleclass';
 import ToastService from 'primevue/toastservice';
 
 import './assets/styles.scss';
@@ -27,6 +28,7 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(ConfirmationService);
+app.directive('styleclass', StyleClass);
 
 app.provide('backendHttpClient', backendHttpClient);
 app.provide('echo', echo);

@@ -1,7 +1,7 @@
 <script>
 // Components
 import { useToast } from "primevue/usetoast";
-import Skeleton from 'primevue/skeleton';
+import { Button, SelectButton, Skeleton } from "primevue";
 
 export default {
     inject: ['echo'],
@@ -10,6 +10,8 @@ export default {
         return { toast };
     },
     components: {
+        Button,
+        SelectButton,
         Skeleton
     },
     props: {
@@ -54,7 +56,7 @@ export default {
         const weatherChannel = this.echo.channel('weather');
         
         weatherChannel.listen('.updating', (e) => {
-            this.toast.add({ severity: 'info', summary: 'Weather', detail: 'Automatically updating...', life: 3000 });
+            this.toast.add({ severity: 'info', summary: 'Weather', detail: 'Hold on a sec, updating...', life: 3000 });
         });
 
         weatherChannel.listen('.updated', (e) => {

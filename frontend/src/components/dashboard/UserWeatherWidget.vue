@@ -1,9 +1,12 @@
 <script>
 // Components
-import Skeleton from 'primevue/skeleton';
+import { Button, Column, DataTable, Skeleton } from 'primevue';
 
 export default {
     components: {
+        Button,
+        Column,
+        DataTable,
         Skeleton
     },
     props: {
