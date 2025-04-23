@@ -1,60 +1,48 @@
 <script>
-// Dependencies
-import { useUserService } from '@/service/UserService';
-import { useWeatherService } from '@/service/WeatherService';
-
 // Components
 import Skeleton from 'primevue/skeleton';
 
 export default {
-    inject: ['backendHttpClient'],
+    components: {
+        Skeleton
+    },
+    props: {
+        failedLoadingUsers: {
+            type: Boolean,
+            required: true
+        },
+        failedLoadingWeather: {
+            type: Boolean,
+            required: true
+        },
+        fetchWeather: {
+            type: Function,
+            required: true
+        },
+        isLoadingUsers: {
+            type: Boolean,
+            required: true
+        },
+        isLoadingWeather: {
+            type: Boolean,
+            required: true
+        },
+        users: {
+            type: Array,
+            required: true
+        },
+        weather: {
+            type: Map,
+            required: true
+        }
+    },
     data: () => ({
-        secondsSinceLastUpdate: 3600,
-        users: [],
-        weather: new Map()
+        secondsSinceLastUpdate: 3600
     }),
     computed: {
-        failedLoadingUsers() {
-            return useUserService().errorOccurred.value;
-        },
-        failedLoadingWeather() {
-            return useWeatherService().errorOccurred.value;
-        },
-        isLoadingUsers() {
-            return useUserService().isLoading.value;
-        },
-        isLoadingWeather() {
-            return useWeatherService().isLoading.value;
-        },
         minutesSinceLastUpdate() {
             return Math.floor(this.secondsSinceLastUpdate / 60);
         }
-    },
-    methods: {
-        fetchUsers() {
-            useUserService()
-                .getUsers(this.backendHttpClient)
-                .then(response => {
-                    this.users = response;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        },
-        fetchWeather() {
-            useWeatherService()
-                .getWeather(this.backendHttpClient)
-                .then(response => {
-                    this.weather = response;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-    },
-    created() {
-        this.fetchUsers();
-        this.fetchWeather();
     }
 };
 </script>
@@ -80,7 +68,7 @@ export default {
                 <Skeleton width="100%"></Skeleton>
             </template>
             <template v-else-if="!isLoadingUsers && failedLoadingUsers">
-                <span class="text-primary font-medium">Unable to load users! </span>
+                <span class="text-primary font-medium">Unable to load users!</span>
             </template>
             <template v-else>
                 <span class="text-primary font-medium">No new </span>
@@ -100,7 +88,7 @@ export default {
                 </div>
             </div>
             <template v-if="failedLoadingWeather">
-                <span class="text-primary font-medium">Unable to load users! </span>
+                <span class="text-primary font-medium">Unable to load weather!</span>
             </template>
             <template v-else>
                 <span class="text-primary font-medium">{{ minutesSinceLastUpdate }} minutes </span>

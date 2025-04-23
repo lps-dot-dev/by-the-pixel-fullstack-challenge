@@ -2,8 +2,8 @@ import { ref } from "vue";
 import { useUserStore } from "@/stores/users"
 
 export function useUserService() {
-    const errorOccurred = ref(false);
-    const isLoading = ref(false);
+    const failedLoadingUsers = ref(false);
+    const isLoadingUsers = ref(false);
 
     /**
      * Retrieves users from the data store or fetches them from the backend (if necessary)
@@ -12,12 +12,12 @@ export function useUserService() {
      * @returns {Promise<object[]|Error>}
      */
     async function getUsers(httpClient) {
-        errorOccurred.value = true;
-        isLoading.value = true;
+        failedLoadingUsers.value = false;
+        isLoadingUsers.value = true;
 
         const userStore = useUserStore();
         if (userStore.users.length > 0) {
-            isLoading.value = true;
+            isLoadingUsers.value = true;
             return Promise.resolve(userStore.users);
         }
 
@@ -27,18 +27,18 @@ export function useUserService() {
                 userStore.setUsers(response.data);
             }
         } catch (error) {
-            errorOccurred.value = true;
-            isLoading.value = false;
+            failedLoadingUsers.value = true;
+            isLoadingUsers.value = false;
             return Promise.reject(error);
         }
 
-        isLoading.value = false;
+        isLoadingUsers.value = false;
         return Promise.resolve(userStore.users);
     }
 
     return {
-        errorOccurred,
-        isLoading,
+        failedLoadingUsers,
+        isLoadingUsers,
         getUsers
     };
 }

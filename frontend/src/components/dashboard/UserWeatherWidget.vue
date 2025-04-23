@@ -1,55 +1,36 @@
 <script>
-// Dependencies
-import { useUserService } from '@/service/UserService';
-import { useWeatherService } from '@/service/WeatherService';
-
 // Components
 import Skeleton from 'primevue/skeleton';
 
 export default {
-    inject: ['backendHttpClient'],
-    data: () => ({
-        isLoadingUsers: false,
-        users: [],
-        weather: new Map()
-    }),
-    computed: {
-        failedLoadingWeather() {
-            return useWeatherService().errorOccurred.value;
-        },
-        isLoadingWeather() {
-            return useWeatherService().isLoading.value;
-        }
+    components: {
+        Skeleton
     },
-    methods: {
-        fetchUsers() {
-            this.isLoadingUsers = true;
-            useUserService()
-                .getUsers(this.backendHttpClient)
-                .then(response => {
-                    this.users = response;
-                })
-                .catch(error => {
-                    console.error(error);
-                })
-                .finally(() => {
-                    this.isLoadingUsers = false;
-                });
+    props: {
+        failedLoadingUsers: {
+            type: Boolean,
+            required: true
         },
-        fetchWeather() {
-            useWeatherService()
-                .getWeather(this.backendHttpClient)
-                .then(response => {
-                    this.weather = response;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+        failedLoadingWeather: {
+            type: Boolean,
+            required: true
+        },
+        isLoadingUsers: {
+            type: Boolean,
+            required: true
+        },
+        isLoadingWeather: {
+            type: Boolean,
+            required: true
+        },
+        users: {
+            type: Array,
+            required: true
+        },
+        weather: {
+            type: Map,
+            required: true
         }
-    },
-    created() {
-        this.fetchUsers();
-        this.fetchWeather();
     }
 };
 </script>

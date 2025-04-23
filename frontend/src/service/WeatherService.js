@@ -2,8 +2,8 @@ import { ref } from "vue";
 import { useWeatherStore } from "../stores/weather";
 
 export function useWeatherService() {
-    const errorOccurred = ref(false);
-    const isLoading = ref(false);
+    const failedLoadingWeather = ref(false);
+    const isLoadingWeather = ref(false);
 
     /**
      * Retrieves users from the data store or fetches them from the backend (if necessary)
@@ -12,12 +12,12 @@ export function useWeatherService() {
      * @returns {Promise<Map<number,object>|Error>}
      */
     async function getWeather(httpClient) {
-        errorOccurred.value = false;
-        isLoading.value = true;
+        failedLoadingWeather.value = false;
+        isLoadingWeather.value = true;
 
         const weatherStore = useWeatherStore();
         if (weatherStore.weather.length > 0) {
-            isLoading.value = false;
+            isLoadingWeather.value = false;
             return Promise.resolve(weatherStore.weather);
         }
 
@@ -27,18 +27,18 @@ export function useWeatherService() {
                 weatherStore.setWeather(response.data);
             }
         } catch (error) {
-            errorOccurred.value = true;
-            isLoading.value = false;
+            failedLoadingWeather.value = true;
+            isLoadingWeather.value = false;
             return Promise.reject(error);
         }
 
-        isLoading.value = false;
+        isLoadingWeather.value = false;
         return Promise.resolve(weatherStore.weather);
     }
 
     return {
-        errorOccurred,
-        isLoading,
+        failedLoadingWeather,
+        isLoadingWeather,
         getWeather
     };
 }
