@@ -6,10 +6,14 @@ RUN apt-get install -y \
     pkg-config  \
     libzip-dev
 
+RUN pecl install redis
+
 RUN docker-php-ext-install \
     mysqli \
     pdo_mysql \
     zip
+
+RUN docker-php-ext-enable redis
 
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
