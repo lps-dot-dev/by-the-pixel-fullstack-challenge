@@ -58,10 +58,11 @@ export default {
         });
 
         weatherChannel.listen('.updated', (e) => {
+            console.log(e);
             this.toast.add({ severity: 'success', summary: 'Weather', detail: 'Updated successfully!', life: 3000 });
         });
     },
-    beforeUnmount() {
+    unmounted() {
         this.echo.leave('weather');
     }
 };
