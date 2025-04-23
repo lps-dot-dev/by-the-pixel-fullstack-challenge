@@ -11,8 +11,14 @@ export default {
     data: () => ({
         failedLoadingUsers: false,
         isLoadingUsers: false,
+        secondsSinceLastUpdate: 3600,
         users: []
     }),
+    computed: {
+        minutesSinceLastUpdate() {
+            return Math.floor(this.secondsSinceLastUpdate / 60);
+        }
+    },
     methods: {
         fetchUsers() {
             this.failedLoadingUsers = false;
@@ -37,7 +43,7 @@ export default {
 </script>
 
 <template>
-    <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+    <div class="col-span-12 xl:col-span-4">
         <div class="card mb-0">
             <div class="flex justify-between mb-4">
                 <div>
@@ -65,49 +71,33 @@ export default {
             </template>
         </div>
     </div>
-    <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+    <div class="col-span-12 xl:col-span-4">
         <div class="card mb-0">
             <div class="flex justify-between mb-4">
                 <div>
-                    <span class="block text-muted-color font-medium mb-4">Revenue</span>
-                    <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">$2.100</div>
+                    <span class="block text-muted-color font-medium mb-4">Powered By</span>
+                    <a class="text-surface-900 dark:text-surface-0 font-medium text-xl" href="https://openweathermap.org/" target="_blank">OpenWeather.org</a>
                 </div>
                 <div class="flex items-center justify-center bg-orange-100 dark:bg-orange-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
-                    <i class="pi pi-dollar text-orange-500 !text-xl"></i>
+                    <i class="pi pi-sun text-orange-500 !text-xl"></i>
                 </div>
             </div>
-            <span class="text-primary font-medium">%52+ </span>
-            <span class="text-muted-color">since last week</span>
+            <span class="text-primary font-medium">{{ minutesSinceLastUpdate }} minutes </span>
+            <span class="text-muted-color">since last update</span>
         </div>
     </div>
-    <div class="col-span-12 lg:col-span-6 xl:col-span-3">
+
+    <div class="col-span-12 xl:col-span-4">
         <div class="card mb-0">
-            <div class="flex justify-between mb-4">
+            <div class="flex justify-between">
                 <div>
-                    <span class="block text-muted-color font-medium mb-4">Customers</span>
-                    <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">28441</div>
+                    <span class="block text-muted-color font-medium mb-4">Actions</span>
+                    <Button class="mr-2 xl:mb-2 xl:mr-0" label="Refresh Weather" icon="pi pi-refresh" iconPos="right" severity="warn" />
                 </div>
-                <div class="flex items-center justify-center bg-cyan-100 dark:bg-cyan-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
-                    <i class="pi pi-users text-cyan-500 !text-xl"></i>
+                <div class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
+                    <i class="pi pi-cog text-green-500 !text-xl"></i>
                 </div>
             </div>
-            <span class="text-primary font-medium">520 </span>
-            <span class="text-muted-color">newly registered</span>
-        </div>
-    </div>
-    <div class="col-span-12 lg:col-span-6 xl:col-span-3">
-        <div class="card mb-0">
-            <div class="flex justify-between mb-4">
-                <div>
-                    <span class="block text-muted-color font-medium mb-4">Comments</span>
-                    <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">152 Unread</div>
-                </div>
-                <div class="flex items-center justify-center bg-purple-100 dark:bg-purple-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
-                    <i class="pi pi-comment text-purple-500 !text-xl"></i>
-                </div>
-            </div>
-            <span class="text-primary font-medium">85 </span>
-            <span class="text-muted-color">responded</span>
         </div>
     </div>
 </template>

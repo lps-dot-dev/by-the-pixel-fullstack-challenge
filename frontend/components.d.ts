@@ -24,6 +24,7 @@ declare module 'vue' {
     Skeleton: typeof import('primevue/skeleton')['default']
     StatsWidget: typeof import('./src/components/dashboard/StatsWidget.vue')['default']
     Toast: typeof import('primevue/toast')['default']
+    UserWeatherWidget: typeof import('./src/components/dashboard/UserWeatherWidget.vue')['default']
   }
   export interface ComponentCustomProperties {
     StyleClass: typeof import('primevue/styleclass')['default']
