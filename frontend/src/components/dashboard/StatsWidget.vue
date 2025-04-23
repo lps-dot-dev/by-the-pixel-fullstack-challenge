@@ -1,7 +1,7 @@
 <script>
 // Dependencies
 import { getUsers } from '@/service/UserService';
-import { getWeather } from '@/service/WeatherService';
+import { useWeatherService } from '@/service/WeatherService';
 
 // Components
 import Skeleton from 'primevue/skeleton';
@@ -10,14 +10,18 @@ export default {
     inject: ['backendHttpClient'],
     data: () => ({
         failedLoadingUsers: false,
-        failedLoadingWeather: false,
         isLoadingUsers: false,
-        isLoadingWeather: false,
         secondsSinceLastUpdate: 3600,
         users: [],
         weather: new Map()
     }),
     computed: {
+        failedLoadingWeather() {
+            return useWeatherService().errorOccurred.value;
+        },
+        isLoadingWeather() {
+            return useWeatherService().isLoading.value;
+        },
         minutesSinceLastUpdate() {
             return Math.floor(this.secondsSinceLastUpdate / 60);
         }
@@ -39,18 +43,13 @@ export default {
                 });
         },
         fetchWeather() {
-            this.failedLoadingWeather = false;
-            this.isLoadingWeather = true;
-            getWeather(this.backendHttpClient)
+            useWeatherService()
+                .getWeather(this.backendHttpClient)
                 .then(response => {
                     this.weather = response;
                 })
                 .catch(error => {
                     console.error(error);
-                    this.failedLoadingWeather = true;
-                })
-                .finally(() => {
-                    this.isLoadingWeather = false;
                 });
         }
     },
@@ -100,8 +99,13 @@ export default {
                     <i class="pi pi-sun text-orange-500 !text-xl"></i>
                 </div>
             </div>
-            <span class="text-primary font-medium">{{ minutesSinceLastUpdate }} minutes </span>
-            <span class="text-muted-color">since last update</span>
+            <template v-if="failedLoadingWeather">
+                <span class="text-primary font-medium">Unable to load users! </span>
+            </template>
+            <template v-else>
+                <span class="text-primary font-medium">{{ minutesSinceLastUpdate }} minutes </span>
+                <span class="text-muted-color">since last update</span>
+            </template>
         </div>
     </div>
 
@@ -110,7 +114,15 @@ export default {
             <div class="flex justify-between">
                 <div>
                     <span class="block text-muted-color font-medium mb-4">Actions</span>
-                    <Button class="mr-2 xl:mb-2 xl:mr-0" label="Refresh Weather" icon="pi pi-refresh" iconPos="right" severity="warn" @click="fetchWeather" />
+                    <Button
+                        :disabled="isLoadingWeather"
+                        class="mr-2 xl:mb-2 xl:mr-0"
+                        :label="isLoadingWeather ? 'Refreshing Weather...' : 'Refresh Weather'"
+                        icon="pi pi-refresh"
+                        iconPos="right"
+                        severity="warn"
+                        @click="fetchWeather"
+                    />
                 </div>
                 <div class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
                     <i class="pi pi-cog text-green-500 !text-xl"></i>

@@ -1,12 +1,26 @@
 <script>
+// Dependencies
 import { getUsers } from '@/service/UserService';
+import { useWeatherService } from '@/service/WeatherService';
+
+// Components
+import Skeleton from 'primevue/skeleton';
 
 export default {
     inject: ['backendHttpClient'],
     data: () => ({
         isLoadingUsers: false,
-        users: []
+        users: [],
+        weather: new Map()
     }),
+    computed: {
+        failedLoadingWeather() {
+            return useWeatherService().errorOccurred.value;
+        },
+        isLoadingWeather() {
+            return useWeatherService().isLoading.value;
+        }
+    },
     methods: {
         fetchUsers() {
             this.isLoadingUsers = true;
@@ -20,10 +34,21 @@ export default {
                 .finally(() => {
                     this.isLoadingUsers = false;
                 });
+        },
+        fetchWeather() {
+            useWeatherService()
+                .getWeather(this.backendHttpClient)
+                .then(response => {
+                    this.weather = response;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     },
     created() {
         this.fetchUsers();
+        this.fetchWeather();
     }
 };
 </script>
@@ -40,7 +65,12 @@ export default {
             </Column>
             <Column style="width: 15%" header="Weather">
                 <template #body="slotProps">
-                    70F
+                    <template v-if="isLoadingWeather">
+                        <Skeleton width="2rem" height="1.5rem"></Skeleton>
+                    </template>
+                    <template v-else>
+                        70F
+                    </template>
                 </template>
             </Column>
             <Column style="width: 15%" header="View">
