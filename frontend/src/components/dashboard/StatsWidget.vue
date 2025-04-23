@@ -1,8 +1,14 @@
 <script>
 // Components
+import { useToast } from "primevue/usetoast";
 import Skeleton from 'primevue/skeleton';
 
 export default {
+    inject: ['echo'],
+    setup() {
+        const toast = useToast();
+        return { toast };
+    },
     components: {
         Skeleton
     },
@@ -43,6 +49,20 @@ export default {
         minutesSinceLastUpdate() {
             return Math.floor(this.secondsSinceLastUpdate / 60);
         }
+    },
+    mounted() {
+        const weatherChannel = this.echo.channel('weather');
+        
+        weatherChannel.listen('.updating', (e) => {
+            this.toast.add({ severity: 'info', summary: 'Weather', detail: 'Automatically updating...', life: 3000 });
+        });
+
+        weatherChannel.listen('.updated', (e) => {
+            this.toast.add({ severity: 'success', summary: 'Weather', detail: 'Updated successfully!', life: 3000 });
+        });
+    },
+    beforeUnmount() {
+        this.echo.leave('weather');
     }
 };
 </script>

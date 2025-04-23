@@ -4,6 +4,7 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import { backendHttpClient } from "@/service/HttpClientService";
+import { echo } from "@/service/EchoService";
 
 import Aura from '@primeuix/themes/aura';
 import PrimeVue from 'primevue/config';
@@ -28,5 +29,6 @@ app.use(ToastService);
 app.use(ConfirmationService);
 
 app.provide('backendHttpClient', backendHttpClient);
+app.provide('echo', echo);
 
 app.mount("#app");
