@@ -1,8 +1,10 @@
+import { echo as echoInstance } from "@/service/EchoService";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useWeatherStore } from "../stores/weather";
 
-/** @param {import('laravel-echo').default} echo */
-export function useWeatherService(echo) {
+export function useWeatherService() {
+    /** @type {import("vue").Ref<import('laravel-echo').default>} */
+    const echo = ref(echoInstance);
     const failedLoadingWeather = ref(false);
     const isLoadingWeather = ref(false);
     const weatherStore = useWeatherStore();
@@ -28,7 +30,7 @@ export function useWeatherService(echo) {
     }
 
     onMounted(() => {
-        const weatherChannel = echo.channel('weather');
+        const weatherChannel = echo.value.channel('weather');
         weatherChannel.listen('.error', () => {
             failedLoadingWeather.value = true;
             isLoadingWeather.value = false;
@@ -46,7 +48,7 @@ export function useWeatherService(echo) {
     });
 
     onUnmounted(() => {
-        echo.leave('weather');
+        echo.value.leave('weather');
     });
 
     return {

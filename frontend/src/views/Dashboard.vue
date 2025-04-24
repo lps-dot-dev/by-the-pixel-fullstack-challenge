@@ -1,6 +1,5 @@
 <script>
 // Dependencies
-import { echo } from "@/service/EchoService";
 import { useToast } from "primevue/usetoast";
 import { useUserService } from '@/service/UserService';
 import { useWeatherService } from "@/service/WeatherService"
@@ -20,7 +19,7 @@ export default {
     inject: ['backendHttpClient', 'echo'],
     setup() {
         const { failedLoadingUsers, isLoadingUsers, getUsers } = useUserService();
-        const { failedLoadingWeather, isLoadingWeather, updateWeather } = useWeatherService(echo);
+        const { failedLoadingWeather, isLoadingWeather, updateWeather } = useWeatherService();
         const { weather } = useWeatherStore();
         const toast = useToast();
 
@@ -55,7 +54,6 @@ export default {
         });
 
         weatherChannel.listen('.updated', (e) => {
-            console.log(e);
             this.toast.add({ severity: 'success', summary: 'Weather', detail: 'Updated successfully!', life: 3000 });
         });
     },
