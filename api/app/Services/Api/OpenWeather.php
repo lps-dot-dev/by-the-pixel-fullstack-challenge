@@ -2,6 +2,7 @@
 
 namespace App\Services\Api;
 
+use App\Events\UpdateWeatherErrorOccurred;
 use App\Models\UserLocation;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -9,9 +10,7 @@ use GuzzleHttp\Pool;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Utils;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 
 class OpenWeather
 {
@@ -33,6 +32,7 @@ class OpenWeather
             ]
         );
 
+        $errors = 0;
         /** @var Collection<int,array> $results */
         $results = collect();
         $pool = new Pool($this->client, $weatherRequests->toArray(), [
@@ -43,13 +43,18 @@ class OpenWeather
                     'value' => $response,
                 ]);
             },
-            'rejected' => function (RequestException $reason, $userId) use (&$results) {
+            'rejected' => function (RequestException $reason, $userId) use (&$errors, &$results) {
+                $errors++;
                 $results->put($userId, [
                     'status' => PromiseInterface::REJECTED,
                     'reason' => $reason->getMessage(),
                 ]);
             },
         ]);
+
+        if ($errors === $weatherRequests->count()) {
+            UpdateWeatherErrorOccurred::dispatch('Could not load weather for any users!');
+        }
 
         // Initiate the transfers and create a promise
         $promise = $pool->promise();

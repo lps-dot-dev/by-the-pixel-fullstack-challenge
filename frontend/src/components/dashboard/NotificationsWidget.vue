@@ -62,6 +62,10 @@ export default {
     mounted() {
         const weatherChannel = this.echo.channel('weather');
         weatherChannel.listen('.updated', (e) => {
+            if ('weatherData' in e === false || Object.keys(e.weatherData).length === 0) {
+                return;
+            }
+
             this.notifications.unshift({
                 backgroundStyles: 'bg-orange-100 dark:bg-orange-400/10',
                 iconStyles: 'pi pi-sun text-orange-500 !text-xl',
