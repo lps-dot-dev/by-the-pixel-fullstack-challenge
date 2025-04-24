@@ -2,7 +2,7 @@
 // Dependencies
 import { useToast } from "primevue/usetoast";
 import { useUserService } from '@/service/UserService';
-import { useWeatherService } from "@/service/WeatherService"
+import { useWeatherService } from "@/service/WeatherService";
 import { useWeatherStore } from "@/stores/weather";
 
 // Components

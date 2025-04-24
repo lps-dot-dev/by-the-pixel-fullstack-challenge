@@ -4,6 +4,7 @@ import { useUserStore } from "@/stores/users"
 export function useUserService() {
     const failedLoadingUsers = ref(false);
     const isLoadingUsers = ref(false);
+    const userStore = useUserStore();
 
     /**
      * Retrieves users from the data store or fetches them from the backend (if necessary)
@@ -15,9 +16,8 @@ export function useUserService() {
         failedLoadingUsers.value = false;
         isLoadingUsers.value = true;
 
-        const userStore = useUserStore();
         if (userStore.users.length > 0) {
-            isLoadingUsers.value = true;
+            isLoadingUsers.value = false;
             return Promise.resolve(userStore.users);
         }
 

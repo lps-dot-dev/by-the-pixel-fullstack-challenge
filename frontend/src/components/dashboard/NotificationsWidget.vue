@@ -24,10 +24,9 @@ export default {
             { label: 'Remove', icon: 'pi pi-fw pi-trash' }
         ],
         notifications: [
-            { backgroundStyles: 'bg-blue-100 dark:bg-blue-400/10', iconStyles: 'pi pi-dollar !text-xl text-blue-500', message: 'Richard Jones has purchased a blue t-shirt for $79.00', createdAt: moment() },
-            { backgroundStyles: 'bg-orange-100 dark:bg-orange-400/10', iconStyles: 'pi pi-download !text-xl text-orange-500', message: 'Your request for withdrawal of $2500.00 has been initiated.', createdAt: moment().subtract(1, 'hour') },
-            { backgroundStyles: 'bg-blue-100 dark:bg-blue-400/10', iconStyles: 'pi pi-dollar !text-xl text-blue-500', message: 'Keyser Wick has purchased a black jacket for $59.00', createdAt: moment().subtract(1, 'day') },
-            { backgroundStyles: 'bg-pink-100 dark:bg-pink-400/10', iconStyles: 'pi pi-question !text-xl text-pink-500', message: 'Jane Davis has posted a new questions about your product.', createdAt: moment().subtract(1, 'day').startOf('day') },
+            { backgroundStyles: 'bg-orange-100 dark:bg-orange-400/10', iconStyles: 'pi pi-download !text-xl text-orange-500', message: 'Latest version has been installed.', createdAt: moment().subtract(1, 'hour') },
+            { backgroundStyles: 'bg-blue-100 dark:bg-blue-400/10', iconStyles: 'pi pi-dollar !text-xl text-blue-500', message: 'An API subscription has been purchased for $59.00', createdAt: moment().subtract(1, 'day') },
+            { backgroundStyles: 'bg-pink-100 dark:bg-pink-400/10', iconStyles: 'pi pi-question !text-xl text-pink-500', message: 'OpenWeather API could not be reached.', createdAt: moment().subtract(1, 'day').startOf('day') },
             { backgroundStyles: 'bg-green-100 dark:bg-green-400/10', iconStyles: 'pi pi-arrow-up !text-xl text-green-500', message: 'Your revenue has increased by %25.', createdAt: moment().subtract(1, 'week').add(1, 'hour') },
             { backgroundStyles: 'bg-purple-100 dark:bg-purple-400/10', iconStyles: 'pi pi-heart !text-xl text-purple-500', message: '12 users have added your products to their wishlist.', createdAt: moment().subtract(1, 'week')}
         ]

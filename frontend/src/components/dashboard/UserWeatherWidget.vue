@@ -1,6 +1,8 @@
 <script>
-// Components
+// Dependencies
 import moment from 'moment';
+
+// Components
 import { Button, Card, Column, DataTable, Dialog, Divider, Skeleton } from 'primevue';
 
 export default {
@@ -83,7 +85,7 @@ export default {
             </Column>
             <Column style="width: 15%" header="View">
                 <template #body="slotProps">
-                    <Button :disabled="!weather.has(slotProps.data.id)" icon="pi pi-search" type="button" class="p-button-text" @click="displayDetailedWeather(slotProps.data)"></Button>
+                    <Button :disabled="!weather.has(slotProps.data.id) || failedLoadingWeather || isLoadingWeather" icon="pi pi-search" type="button" class="p-button-text" @click="displayDetailedWeather(slotProps.data)"></Button>
                 </template>
             </Column>
         </DataTable>
