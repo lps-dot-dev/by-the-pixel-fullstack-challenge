@@ -62,13 +62,17 @@ export default {
     },
     mounted() {
         const weatherChannel = this.echo.channel('weather');
-        
-        weatherChannel.listen('.updating', (e) => {
-            //
-        });
-
         weatherChannel.listen('.updated', (e) => {
-            // console.log(e);
+            this.notifications.unshift({
+                backgroundStyles: 'bg-orange-100 dark:bg-orange-400/10',
+                iconStyles: 'pi pi-sun text-orange-500 !text-xl',
+                message: 'Weather has been updated!',
+                createdAt: moment()
+            });
+
+            if (this.notifications.length > 6) {
+                this.notifications.pop();
+            }
         });
     },
     unmounted() {
@@ -102,7 +106,12 @@ export default {
                     >
                         <i :class="notification.iconStyles"></i>
                     </div>
-                    <span class="text-surface-900 dark:text-surface-0 leading-normal">{{ notification.message }}</span>
+                    <span class="text-surface-900 dark:text-surface-0 leading-normal">
+                        {{ notification.message }}
+                        <small v-if="['Today', 'Yesterday'].includes(label)" class="text-muted-color">
+                            {{ notification.createdAt.format('hh:mm A') }}
+                        </small>
+                    </span>
                 </li>
             </ul>
         </template>
