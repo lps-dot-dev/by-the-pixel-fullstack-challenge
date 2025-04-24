@@ -1,8 +1,11 @@
 <script>
+// Dependencies
+import { useCounter } from "@/composables/counter";
 // Components
 import { Button, SelectButton, Skeleton } from "primevue";
 
 export default {
+    inject: ['echo'],
     components: {
         Button,
         SelectButton,
@@ -38,13 +41,28 @@ export default {
             required: true
         }
     },
-    data: () => ({
-        secondsSinceLastUpdate: 3600
-    }),
+    setup() {
+        const { count, resetCounter } = useCounter();
+        return { count, resetCounter }
+    },
     computed: {
         minutesSinceLastUpdate() {
-            return Math.floor(this.secondsSinceLastUpdate / 60);
+            const minutes = Math.floor(this.count / 60);
+            if (minutes > 0) {
+                return `${minutes} minute` + (minutes > 1 ? 's' : '');
+            }
+        
+            return 'Less than a minute ago';
         }
+    },
+    mounted() {
+        const weatherChannel = this.echo.channel('weather');
+        weatherChannel.listen('.updated', () => {
+            this.resetCounter();
+        });
+    },
+    unmounted() {
+        this.echo.leave('weather');
     }
 };
 </script>
@@ -93,8 +111,8 @@ export default {
                 <span class="text-primary font-medium">Unable to load weather!</span>
             </template>
             <template v-else>
-                <span class="text-primary font-medium">{{ minutesSinceLastUpdate }} minutes </span>
-                <span class="text-muted-color">since last update</span>
+                <span class="text-primary font-medium">{{ minutesSinceLastUpdate }}</span>
+                <span class="text-muted-color"> since last update</span>
             </template>
         </div>
     </div>
