@@ -45,7 +45,7 @@ export default {
             <Column field="name" header="Name" :sortable="true" style="width: 35%"></Column>
             <Column header="Location" :sortable="true" style="width: 35%">
                 <template #body="slotProps">
-                    {{ slotProps.data.latitude }} x {{ slotProps.data.longitude }}
+                    {{ `${slotProps.data.city}, ${slotProps.data.state}` }}
                 </template>
             </Column>
             <Column style="width: 15%" header="Weather">
