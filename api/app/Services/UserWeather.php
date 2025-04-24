@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UpdateWeatherErrorOccurred;
 use App\Models\User;
 use App\Models\UserLocation;
 use App\Services\Api\OpenWeather;
@@ -30,7 +31,7 @@ class UserWeather
 
         foreach ($results as $userId => $result) {
             if ($result['status'] === PromiseInterface::REJECTED) {
-                /** @todo Broadcast error message to error channel */
+                UpdateWeatherErrorOccurred::dispatch($result['reason']);
                 continue;
             }
 
