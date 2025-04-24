@@ -1,7 +1,10 @@
 <script>
 // Dependencies
+import { echo } from "@/service/EchoService";
+import { useToast } from "primevue/usetoast";
 import { useUserService } from '@/service/UserService';
 import { useWeatherService } from "@/service/WeatherService"
+import { useWeatherStore } from "@/stores/weather";
 
 // Components
 import NotificationsWidget from '@/components/dashboard/NotificationsWidget.vue';
@@ -14,16 +17,17 @@ export default {
         NotificationsWidget,
         UserWeatherWidget
     },
-    inject: ['backendHttpClient'],
+    inject: ['backendHttpClient', 'echo'],
     setup() {
         const { failedLoadingUsers, isLoadingUsers, getUsers } = useUserService();
-        const { failedLoadingWeather, isLoadingWeather, getWeather } = useWeatherService();
+        const { failedLoadingWeather, isLoadingWeather, updateWeather } = useWeatherService(echo);
+        const { weather } = useWeatherStore();
+        const toast = useToast();
 
-        return { failedLoadingUsers, failedLoadingWeather, isLoadingUsers, isLoadingWeather, getUsers, getWeather}
+        return { getUsers, failedLoadingUsers, failedLoadingWeather, isLoadingUsers, isLoadingWeather, toast, updateWeather, weather }
     },
     data: () => ({
-        users: [],
-        weather: new Map()
+        users: []
     }),
     methods: {
         fetchUsers() {
@@ -36,18 +40,27 @@ export default {
                 });
         },
         fetchWeather() {
-            this.getWeather(this.backendHttpClient)
-                .then(response => {
-                    this.weather = response;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            this.updateWeather(this.backendHttpClient);
         }
     },
     created() {
         this.fetchUsers();
         this.fetchWeather();
+    },
+    mounted() {
+        const weatherChannel = this.echo.channel('weather');
+        
+        weatherChannel.listen('.updating', (e) => {
+            this.toast.add({ severity: 'info', summary: 'Weather', detail: 'Hold on a sec, updating...', life: 3000 });
+        });
+
+        weatherChannel.listen('.updated', (e) => {
+            console.log(e);
+            this.toast.add({ severity: 'success', summary: 'Weather', detail: 'Updated successfully!', life: 3000 });
+        });
+    },
+    unmounted() {
+        this.echo.leave('weather');
     }
 };
 </script>

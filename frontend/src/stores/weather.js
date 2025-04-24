@@ -9,10 +9,10 @@ export const useWeatherStore = defineStore("weather", () => {
    * For single insertions
    * 
    * @param {number} userId
-   * @param {object} weather
+   * @param {object} userWeather
    */
-  function addWeather(userId, weather) {
-    weather.value.set(userId, weather);
+  function addWeather(userId, userWeather) {
+    weather.value.set(userId, userWeather);
   }
 
   /**

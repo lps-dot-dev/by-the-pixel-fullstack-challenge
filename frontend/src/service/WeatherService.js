@@ -1,44 +1,57 @@
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { useWeatherStore } from "../stores/weather";
 
-export function useWeatherService() {
+/** @param {import('laravel-echo').default} echo */
+export function useWeatherService(echo) {
     const failedLoadingWeather = ref(false);
     const isLoadingWeather = ref(false);
+    const weatherStore = useWeatherStore();
 
     /**
-     * Retrieves users from the data store or fetches them from the backend (if necessary)
+     * Makes a HTTP request to initiate the update weather process. This HTTP call does not respond with updated weather data.
+     * The updated weather data will be broadcasted via websockets once it is ready.
      * 
      * @param {import('axios').Axios} httpClient 
-     * @returns {Promise<Map<number,object>|Error>}
+     * @returns {Promise<true|Error>}
      */
-    async function getWeather(httpClient) {
-        failedLoadingWeather.value = false;
+    async function updateWeather(httpClient) {
         isLoadingWeather.value = true;
-
-        const weatherStore = useWeatherStore();
-        if (weatherStore.weather.length > 0) {
-            isLoadingWeather.value = false;
-            return Promise.resolve(weatherStore.weather);
-        }
-
+        
         try {
-            const response = await httpClient.get('/weather');
-            if (response.data instanceof Object && Object.keys(response.data).length > 0) {
-                weatherStore.setWeather(response.data);
-            }
+            await httpClient.get('/weather');
         } catch (error) {
             failedLoadingWeather.value = true;
-            isLoadingWeather.value = false;
             return Promise.reject(error);
         }
 
-        isLoadingWeather.value = false;
-        return Promise.resolve(weatherStore.weather);
+        return Promise.resolve(true);
     }
+
+    onMounted(() => {
+        const weatherChannel = echo.channel('weather');
+        weatherChannel.listen('.error', () => {
+            failedLoadingWeather.value = true;
+            isLoadingWeather.value = false;
+        });
+
+        weatherChannel.listen('.updating', () => {
+            failedLoadingWeather.value = false;
+            isLoadingWeather.value = true;
+        });
+
+        weatherChannel.listen('.updated', (event) => {
+            weatherStore.setWeather(event.weatherData);
+            isLoadingWeather.value = false;
+        });
+    });
+
+    onUnmounted(() => {
+        echo.leave('weather');
+    });
 
     return {
         failedLoadingWeather,
         isLoadingWeather,
-        getWeather
+        updateWeather
     };
 }
