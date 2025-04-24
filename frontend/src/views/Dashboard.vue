@@ -28,6 +28,16 @@ export default {
     data: () => ({
         users: []
     }),
+    watch: {
+        failedLoadingWeather: {
+            immediate: true,
+            handler(newFailureState) {
+                if (newFailureState) {
+                    this.toast.add({ severity: 'error', summary: 'Weather', detail: 'Failed to update!', life: 3000 });
+                }
+            }
+        }
+    },
     methods: {
         fetchUsers() {
             this.getUsers(this.backendHttpClient)

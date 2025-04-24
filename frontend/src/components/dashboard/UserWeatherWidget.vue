@@ -88,6 +88,7 @@ export default {
                     <Button :disabled="!weather.has(slotProps.data.id) || failedLoadingWeather || isLoadingWeather" icon="pi pi-search" type="button" class="p-button-text" @click="displayDetailedWeather(slotProps.data)"></Button>
                 </template>
             </Column>
+            <template #empty> No users found.</template>
         </DataTable>
 
         <Dialog v-model:visible="showDetailedWeather" :style="{ width: '450px' }" header="Weather Details" :modal="true">

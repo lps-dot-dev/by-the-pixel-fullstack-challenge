@@ -17,12 +17,17 @@ export function useWeatherService() {
      * @returns {Promise<true|Error>}
      */
     async function updateWeather(httpClient) {
+        failedLoadingWeather.value = false;
         isLoadingWeather.value = true;
         
         try {
             await httpClient.get('/weather');
         } catch (error) {
             failedLoadingWeather.value = true;
+            // Prevent users from trying again so soon by delaying the loading state
+            setTimeout(() => {
+                isLoadingWeather.value = false;
+            }, 2000);
             return Promise.reject(error);
         }
 
