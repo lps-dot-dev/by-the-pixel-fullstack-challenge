@@ -2,6 +2,13 @@
 
 set -e
 
+if [ ! -f .env ]; then
+    echo "📝 .env file does not exist. Copying .env.example to .env..."
+    cp .env.example .env
+else
+    echo "📝 .env file already exists. Skipping copy."
+fi
+
 echo "⚙️ Update composer dependencies..."
 composer install --no-interaction --prefer-dist --optimize-autoloader
 
@@ -15,8 +22,8 @@ fi
 echo "📦 Running Laravel migrations..."
 php artisan migrate
 
+echo "🔧 Running Laravel tests..."
+php artisan test --testsuite=Unit
+
 echo "🧵 Starting Supervisor..."
 exec /usr/bin/supervisord -n
-
-echo "🔧 Running Laravel tests..."
-php artisan test
