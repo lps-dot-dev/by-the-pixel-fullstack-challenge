@@ -23,13 +23,6 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY . /var/www/html
-
-RUN /usr/local/bin/composer install --no-interaction --prefer-dist --optimize-autoloader
-RUN php artisan key:generate
-
 RUN a2enmod rewrite
-
 COPY ./docker/supervisor /etc/supervisor/conf.d
 CMD ["sh", "./docker/entrypoint.sh"]
-
