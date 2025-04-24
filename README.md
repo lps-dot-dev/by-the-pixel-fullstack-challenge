@@ -57,9 +57,6 @@ Once completed:
 
 - Connect to container to run commands: `docker exec -it fullstack-challenge-app-1 bash`
   - Make sure you are in the `/var/www/html` path
-  - Install php dependencies: `composer install`
-  - Setup app key: `php artisan key:generate`
-  - Migrate database: `php artisan migrate` 
   - Seed database: `php artisan db:seed`
   - Run tests: `php artisan test`
 - Visit api: [http://localhost](http://localhost)
