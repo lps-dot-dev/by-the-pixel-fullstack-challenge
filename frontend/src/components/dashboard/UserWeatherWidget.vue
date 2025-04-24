@@ -54,7 +54,7 @@ export default {
                         <Skeleton width="2rem" height="1.5rem"></Skeleton>
                     </template>
                     <template v-else>
-                        70F
+                        {{ weather.has(slotProps.data.id) ? `${Math.ceil(weather.get(slotProps.data.id).main.temp)}F` : '70F' }}
                     </template>
                 </template>
             </Column>

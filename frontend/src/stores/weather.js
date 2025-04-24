@@ -24,7 +24,7 @@ export const useWeatherStore = defineStore("weather", () => {
     const userIds = Object.keys(weather);
     userIds.forEach(userId => {
       if (isNaN(userId) == false) {
-        addWeather(userId, weather[userId]);
+        addWeather(Number.parseInt(userId), weather[userId]);
       }
     });
   }
