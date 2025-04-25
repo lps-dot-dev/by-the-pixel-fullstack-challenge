@@ -50,7 +50,8 @@ Once completed:
    3. It will generate an `APP_KEY` via `php artisan key:generate` (only if the `APP_KEY` variable is missing or empty)
    4. Run database migrations via `php artisan migrate` (health checks are run on the MySQL container prior to ensure it is up and running before the start of this container, so this should not present any race conditions)
    5. Laravel unit tests are executed via `php artisan test --testsuite=Unit` (at this point, `apache2` is not serving our application, therefore we cannot run any `Feature` tests that rely on dependencies)
-   6. The following services are initiated and handled by `supervisord`:
+   6. Register a crontab job that will run every minute that contains Laravel's scheduler. This is used to update the weather on an hourly basis (outside of manual user weather updates).
+   7. The following services are initiated and handled by `supervisord`:
       - `/usr/sbin/apache2ctl -D FOREGROUND`
       - `php /var/www/html/artisan queue:work redis --sleep=3 --tries=3`
       - `php /var/www/html/artisan websockets:serve`

@@ -5,7 +5,8 @@ RUN apt-get update
 RUN apt-get install -y \
     pkg-config \
     libzip-dev \
-    supervisor
+    supervisor \
+    cron
 
 RUN pecl install redis
 

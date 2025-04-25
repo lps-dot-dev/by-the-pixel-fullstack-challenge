@@ -25,5 +25,11 @@ php artisan migrate
 echo "🔧 Running Laravel tests..."
 php artisan test --testsuite=Unit
 
+echo "👷 Starting cron in the background..."
+cp /var/www/html/docker/cron/laravel-scheduler /etc/cron.d/laravel-scheduler
+chmod 0644 /etc/cron.d/laravel-scheduler
+crontab /etc/cron.d/laravel-scheduler
+cron
+
 echo "🧵 Starting Supervisor..."
 exec /usr/bin/supervisord -n
