@@ -1,8 +1,10 @@
 <script>
 // Dependencies
+import { storeToRefs } from "pinia";
 import { useToast } from "primevue/usetoast";
 import { useUserService } from '@/service/UserService';
 import { useWeatherService } from "@/service/WeatherService";
+import { useUserStore } from "@/stores/users";
 import { useWeatherStore } from "@/stores/weather";
 
 // Components
@@ -20,15 +22,25 @@ export default {
     setup() {
         const { failedLoadingUsers, isLoadingUsers, getUsers } = useUserService();
         const { failedLoadingWeather, isLoadingWeather, updateWeather } = useWeatherService();
-        const { weather } = useWeatherStore();
-        const toast = useToast();
 
-        return { getUsers, failedLoadingUsers, failedLoadingWeather, isLoadingUsers, isLoadingWeather, toast, updateWeather, weather }
+        const userStore = useUserStore();
+        const { count: userCount, users } = storeToRefs(userStore);
+
+        const weatherStore = useWeatherStore();
+        const { weather } = storeToRefs(weatherStore);
+
+        const toast = useToast();
+        return { getUsers, failedLoadingUsers, failedLoadingWeather, isLoadingUsers, isLoadingWeather, toast, updateWeather, userCount, users, weather }
     },
-    data: () => ({
-        users: []
-    }),
     watch: {
+        failedLoadingUsers: {
+            immediate: true,
+            handler(newFailureState) {
+                if (newFailureState) {
+                    this.toast.add({ severity: 'error', summary: 'Users', detail: 'Failed to load users!', life: 3000 });
+                }
+            }
+        },
         failedLoadingWeather: {
             immediate: true,
             handler(newFailureState) {
@@ -39,21 +51,17 @@ export default {
         }
     },
     methods: {
-        fetchUsers() {
-            this.getUsers(this.backendHttpClient)
-                .then(response => {
-                    this.users = response;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+        /** @param {Number} pageNumber */
+        fetchUsers(pageNumber) {
+            console.log(pageNumber);
+            this.getUsers(this.backendHttpClient, pageNumber);
         },
         fetchWeather() {
             this.updateWeather(this.backendHttpClient);
         }
     },
     created() {
-        this.fetchUsers();
+        this.fetchUsers(0);
         this.fetchWeather();
     },
     mounted() {
@@ -86,6 +94,7 @@ export default {
                 :fetch-weather="fetchWeather"
                 :is-loading-users="isLoadingUsers"
                 :is-loading-weather="isLoadingWeather"
+                :user-count="userCount"
                 :users="users"
                 :weather="weather"
             />
@@ -94,8 +103,10 @@ export default {
                 :failed-loading-weather="failedLoadingWeather"
                 :is-loading-users="isLoadingUsers"
                 :is-loading-weather="isLoadingWeather"
+                :user-count="userCount"
                 :users="users"
                 :weather="weather"
+                @get-new-user-page="fetchUsers"
             />
         </div>
         <div class="col-span-12 xl:col-span-4">

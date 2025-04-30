@@ -1,9 +1,9 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
 
 export const useUserStore = defineStore("user", () => {
   const users = ref([]);
-  const count = computed(() => users.value.length);
+  const count = ref(0);
 
   /** @param {object} user */
   function addUser(user) {
@@ -15,5 +15,9 @@ export const useUserStore = defineStore("user", () => {
     users.value = newUsers;
   }
 
-  return { count, users, addUser, setUsers };
+  function setUserCount(newCount) {
+    count.value = newCount;
+  }
+
+  return { count, users, addUser, setUsers, setUserCount };
 });

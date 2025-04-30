@@ -15,6 +15,11 @@ export default {
         Divider,
         Skeleton
     },
+    emits: {
+        getNewUserPage: (newPageNumber) => {
+            return Number.isInteger(newPageNumber);
+        }
+    },
     props: {
         failedLoadingUsers: {
             type: Boolean,
@@ -30,6 +35,10 @@ export default {
         },
         isLoadingWeather: {
             type: Boolean,
+            required: true
+        },
+        userCount: {
+            type: Number,
             required: true
         },
         users: {
@@ -58,6 +67,10 @@ export default {
                 this.currentWeather = this.weather.get(id);
                 this.showDetailedWeather = true;
             }
+        },
+        /** @param {import('primevue/datatable').DataTablePageEvent} event */
+        handleNewPageRequest(event) {
+            this.$emit('getNewUserPage', event.page + 1);
         }
     }
 };
@@ -66,7 +79,16 @@ export default {
 <template>
     <div class="col-span-12 card">
         <div class="font-semibold text-xl mb-4">User Weather</div>
-        <DataTable :value="users" :rows="5" :paginator="true" responsiveLayout="scroll" :loading="isLoadingUsers">
+        <DataTable
+            :value="users"
+            :loading="isLoadingUsers"
+            :rows="5"
+            :totalRecords="userCount"
+            responsiveLayout="scroll"
+            lazy
+            paginator
+            @page="handleNewPageRequest"
+        >
             <Column field="name" header="Name" :sortable="true" style="width: 35%"></Column>
             <Column header="Location" :sortable="true" style="width: 35%">
                 <template #body="slotProps">

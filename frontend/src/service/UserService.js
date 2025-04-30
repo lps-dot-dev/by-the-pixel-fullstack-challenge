@@ -9,22 +9,22 @@ export function useUserService() {
     /**
      * Retrieves users from the data store or fetches them from the backend (if necessary)
      * 
-     * @param {import('axios').Axios} httpClient 
+     * @param {import('axios').Axios} httpClient
+     * @param {Number} pageNumber
      * @returns {Promise<object[]|Error>}
      */
-    async function getUsers(httpClient) {
+    async function getUsers(httpClient, pageNumber) {
         failedLoadingUsers.value = false;
         isLoadingUsers.value = true;
 
-        if (userStore.users.length > 0) {
-            isLoadingUsers.value = false;
-            return Promise.resolve(userStore.users);
-        }
-
         try {
-            const response = await httpClient.get('/user');
-            if (response.data instanceof Array && response.data.length > 0) {
-                userStore.setUsers(response.data);
+            const response = await httpClient.get('/user', { params: { page: pageNumber }});
+            if ('data' in response.data && response.data.data instanceof Array && response.data.data.length > 0) {
+                userStore.setUsers(response.data.data);
+            }
+
+            if ('total' in response.data && Number.isInteger(response.data.total)) {
+                userStore.setUserCount(response.data.total);
             }
         } catch (error) {
             failedLoadingUsers.value = true;

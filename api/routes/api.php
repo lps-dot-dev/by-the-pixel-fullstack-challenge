@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WeatherController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,4 +17,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => response());
 Route::get('/user', [UserController::class, 'index']);
+Route::get('/user/count', [UserController::class, 'count']);
 Route::get('/weather', [WeatherController::class, 'index']);

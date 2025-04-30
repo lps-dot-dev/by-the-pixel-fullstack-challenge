@@ -32,6 +32,10 @@ export default {
             type: Boolean,
             required: true
         },
+        userCount: {
+            type: Number,
+            required: true
+        },
         users: {
             type: Array,
             required: true
@@ -73,18 +77,18 @@ export default {
             <div class="flex justify-between mb-4">
                 <div>
                     <span class="block text-muted-color font-medium mb-4">Users</span>
-                    <template v-if="isLoadingUsers">
+                    <template v-if="isLoadingUsers && !userCount">
                         <Skeleton width="2rem" height="1.5rem"></Skeleton>
                     </template>
                     <template v-else>
-                        <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ users.length }}</div>
+                        <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">{{ userCount }}</div>
                     </template>
                 </div>
                 <div class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border" style="width: 2.5rem; height: 2.5rem">
                     <i class="pi pi-user text-blue-500 !text-xl"></i>
                 </div>
             </div>
-            <template v-if="isLoadingUsers">
+            <template v-if="isLoadingUsers && !userCount">
                 <Skeleton width="100%"></Skeleton>
             </template>
             <template v-else-if="!isLoadingUsers && failedLoadingUsers">
