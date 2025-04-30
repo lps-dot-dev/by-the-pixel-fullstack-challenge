@@ -13,9 +13,4 @@ class UserController extends Controller
     {
         return response()->json(User::paginate(5));
     }
-
-    public function count()
-    {
-        return response()->json(['count' => User::count()]);
-    }
 }

@@ -17,5 +17,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => response());
 Route::get('/user', [UserController::class, 'index']);
-Route::get('/user/count', [UserController::class, 'count']);
 Route::get('/weather', [WeatherController::class, 'index']);
