@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\UpdateWeather;
-use App\Listeners\RunUpdateWeather;
+use App\Events\UpdateWeatherForUser;
+use App\Listeners\DispatchUserWeatherUpdates;
+use App\Listeners\TriggerUserWeatherUpdate;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -15,7 +17,10 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         UpdateWeather::class => [
-            RunUpdateWeather::class
+            DispatchUserWeatherUpdates::class
+        ],
+        UpdateWeatherForUser::class => [
+            TriggerUserWeatherUpdate::class
         ],
     ];
 

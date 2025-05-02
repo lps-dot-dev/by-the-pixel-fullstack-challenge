@@ -2,21 +2,21 @@
 
 namespace App\Events;
 
+use App\Models\UserWeather;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Collection;
 
-class UpdateWeatherFinished implements ShouldBroadcast
+class UpdateWeatherForUserFinished implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(public UserWeather $userWeather)
     {
         //
     }
@@ -33,6 +33,6 @@ class UpdateWeatherFinished implements ShouldBroadcast
 
     public function broadcastAs(): string
     {
-        return 'updated';
+        return 'user_updated';
     }
 }

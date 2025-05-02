@@ -4,53 +4,37 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\UserLocation;
+use App\Models\UserWeather as UserWeatherData;
 use App\Services\Api\OpenWeather;
-use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\RejectedPromise;
 use GuzzleHttp\Utils;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
+use Throwable;
 
 class UserWeather
 {
-    private const USER_WEATHER_REDIS_KEY_PREFIX = 'USER_WEATHER_';
-
     public function __construct(private OpenWeather $openWeatherService)
     {
         // Do nothing.
     }
 
-    /** @return Collection<int,\stdClass> */
-    public function updateWeatherForAllUsers(): Collection
+    /**
+     * @param User $user
+     * @return FulfilledPromise<App\Models\UserWeather>|RejectedPromise<string> A fulfilled promise will contain the user weather data model,
+     * the rejected promise will contain the exception message. Since this promise is already fulfilled or rejected,
+     * any declared callbacks will immediately trigger and "waiting" on this promise is not necessary.
+     */
+    public function fetchCurrentWeatherForUser(User $user): FulfilledPromise|RejectedPromise
     {
-        $users = User::all()->keyBy('id');
-        $userLocations = $users->map(fn (User $user) => new UserLocation($user->id, $user->latitude, $user->longitude));
-        /** @todo Check cache before attempting to pull updated weather */
-        $results = $this->openWeatherService->getWeatherForGivenUserLocations($userLocations);
-
-        foreach ($results as $userId => $result) {
-            if ($result['status'] === PromiseInterface::REJECTED) {
-                continue;
-            }
-
-            if (
-                $result['status'] === PromiseInterface::FULFILLED
-                && $result['value'] instanceof Response === false
-            ) {
-                /** @todo Handle unexpected values */
-                continue;
-            }
-
-            /** @todo We can probably remove alot of the data that we don't need to save memory */
-            Cache::put(
-                self::USER_WEATHER_REDIS_KEY_PREFIX . $userId,
-                (string)$result['value']->getBody(),
-                now()->addHour()
-            );
+        $userLocation = new UserLocation($user->id, $user->latitude, $user->longitude);
+        try {
+            $result = $this->openWeatherService->getWeatherForGivenUserLocation($userLocation);
+            $weatherData = Utils::jsonDecode($result->getBody());
+        } catch (Throwable $e) {
+            // Do something.
+            return new RejectedPromise($e->getMessage());
         }
 
-        return $results
-            ->filter(fn (array $result, int $_) => $result['status'] === PromiseInterface::FULFILLED)
-            ->map(fn (array $result, int $_) => Utils::jsonDecode($result['value']->getBody()));
+        return new FulfilledPromise(new UserWeatherData($user->id, $weatherData));
     }
 }

@@ -2,15 +2,11 @@
 
 namespace App\Services\Api;
 
-use App\Events\UpdateWeatherErrorOccurred;
 use App\Models\UserLocation;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Pool;
-use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Collection;
 
 class OpenWeather
 {
@@ -20,48 +16,11 @@ class OpenWeather
         // Do nothing.
     }
 
-    /**
-     * @param Collection<int,UserLocation> $userLocations
-     * @return Collection<int,array>
-     */
-    public function getWeatherForGivenUserLocations(Collection $userLocations): Collection
+    /** @throws GuzzleException */
+    public function getWeatherForGivenUserLocation(UserLocation $userLocation): Response
     {
-        $weatherRequests = $userLocations->mapWithKeys(
-            fn (UserLocation $userLocation) => [
-                $userLocation->userId => $this->composeWeatherRequest($userLocation->latitude, $userLocation->longitude)
-            ]
-        );
-
-        $errors = 0;
-        /** @var Collection<int,array> $results */
-        $results = collect();
-        $pool = new Pool($this->client, $weatherRequests->toArray(), [
-            'concurrency' => 5,
-            'fulfilled' => function (Response $response, $userId) use (&$results) {
-                $results->put($userId, [
-                    'status' => PromiseInterface::FULFILLED,
-                    'value' => $response,
-                ]);
-            },
-            'rejected' => function (RequestException $reason, $userId) use (&$errors, &$results) {
-                $errors++;
-                $results->put($userId, [
-                    'status' => PromiseInterface::REJECTED,
-                    'reason' => $reason->getMessage(),
-                ]);
-            },
-        ]);
-
-        if ($errors === $weatherRequests->count()) {
-            UpdateWeatherErrorOccurred::dispatch('Could not load weather for any users!');
-        }
-
-        // Initiate the transfers and create a promise
-        $promise = $pool->promise();
-        // Force the pool of requests to complete.
-        $promise->wait();
-
-        return $results;
+        $request = $this->composeWeatherRequest($userLocation->latitude, $userLocation->longitude);
+        return $this->client->send($request);
     }
 
     private function composeWeatherRequest(float $latitude, float $longitude): Request
