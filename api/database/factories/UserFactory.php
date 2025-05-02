@@ -25,6 +25,8 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'longitude' => fake()->longitude(),
             'latitude' => fake()->latitude(),
+            'city' => fake('en_US')->city(),
+            'state' => fake('en_US')->stateAbbr()
         ];
     }
 }

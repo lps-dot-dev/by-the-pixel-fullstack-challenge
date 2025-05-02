@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Api\OpenWeather;
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this
+            ->app
+            ->when(OpenWeather::class)
+            ->needs(Client::class)
+            ->give(fn () => new Client(['base_uri' => 'https://api.openweathermap.org']));
     }
 
     /**
