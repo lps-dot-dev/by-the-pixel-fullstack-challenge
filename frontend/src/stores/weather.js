@@ -12,7 +12,9 @@ export const useWeatherStore = defineStore("weather", () => {
    * @param {object} userWeather
    */
   function addWeather(userId, userWeather) {
-    weather.value.set(userId, userWeather);
+    if (isNaN(userId) == false) {
+      weather.value.set(Number.parseInt(userId), userWeather);
+    }
   }
 
   /**
@@ -23,9 +25,7 @@ export const useWeatherStore = defineStore("weather", () => {
   function setWeather(weather) {
     const userIds = Object.keys(weather);
     userIds.forEach(userId => {
-      if (isNaN(userId) == false) {
-        addWeather(Number.parseInt(userId), weather[userId]);
-      }
+      addWeather(userId, weather[userId]);
     });
   }
 

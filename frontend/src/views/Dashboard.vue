@@ -53,7 +53,6 @@ export default {
     methods: {
         /** @param {Number} pageNumber */
         fetchUsers(pageNumber) {
-            console.log(pageNumber);
             this.getUsers(this.backendHttpClient, pageNumber);
         },
         fetchWeather() {
@@ -72,11 +71,7 @@ export default {
         });
 
         weatherChannel.listen('.updated', (e) => {
-            if ('weatherData' in e === false || Object.keys(e.weatherData).length === 0) {
-                this.toast.add({ severity: 'warn', summary: 'Weather', detail: 'No updates to weather received!', life: 3000 });
-            } else {
-                this.toast.add({ severity: 'success', summary: 'Weather', detail: 'Updated successfully!', life: 3000 });
-            }
+            this.toast.add({ severity: 'success', summary: 'Weather', detail: 'Updated successfully!', life: 3000 });
         });
     },
     unmounted() {

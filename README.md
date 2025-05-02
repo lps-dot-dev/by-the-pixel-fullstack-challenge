@@ -71,7 +71,8 @@ Once completed:
 - Visit frontend: [http://localhost:5173](http://localhost:5173)
 
 ## Thoughts/Considerations
-As the number of `users` grows, we may not be able to hit the `500ms` target response time. It may be necessary to use the websocket approach (like weather updates) in the future.
+~~As the number of `users` grows, we may not be able to hit the `500ms` target response time. It may be necessary to use the websocket approach (like weather updates) in the future.~~
+Pagination has been implemented to address this issue.
 
 Testing is not my forte, so I did not come up with any meaningful tests.
 
@@ -81,7 +82,8 @@ That's not intended, perhaps manual weather updates should push events and data 
 
 Right now, the update weather endpoint just dispatches an update weather event. I think it would be a good idea to maybe serve the cached version of the weather (if available).
 
-However, I am unsure if this will scale well. Lets say, in the future, we are working with 1k or 10k weather records. Parsing them into JSON could perhaps take longer than `500ms`, so this may not be plausible.
+~~However, I am unsure if this will scale well. Lets say, in the future, we are working with 1k or 10k weather records. Parsing them into JSON could perhaps take longer than `500ms`, so this may not be plausible.~~
+This is no longer the case, since the listener for the update weather event will trigger individual user weather updates. I am now broadcasting each individual user weather update. I probably shouldn't keep all the user weather in memory for the same scaling issue.
 
 Lastly, I am taking responses from the API as absolute truths. While I am handling response errors gracefully, I am expecting successful responses to have a certain shape/structure.
 

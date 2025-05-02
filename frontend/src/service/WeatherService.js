@@ -46,9 +46,18 @@ export function useWeatherService() {
             isLoadingWeather.value = true;
         });
 
-        weatherChannel.listen('.updated', (event) => {
-            weatherStore.setWeather(event.weatherData);
+        weatherChannel.listen('.updated', () => {
             isLoadingWeather.value = false;
+        });
+
+        weatherChannel.listen('.user_updated', (event) => {
+            if (
+                'userWeather' in event
+                && 'userId' in event.userWeather
+                && 'weatherData' in event.userWeather
+            ) {
+                weatherStore.addWeather(event.userWeather.userId, event.userWeather.weatherData);
+            }
         });
     });
 
