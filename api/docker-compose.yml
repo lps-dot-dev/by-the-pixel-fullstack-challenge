@@ -2,19 +2,25 @@ name: fullstack-challenge
 services:
     app:
         build:
-            context: ./docker
+            context: .
+            dockerfile: ./docker/Dockerfile
         depends_on:
             mysql:
                 condition: service_healthy
             redis:
                 condition: service_healthy
+        networks:
+            - by-the-pixel-network
         ports:
             - "80:80"
+            - "6001:6001"
         volumes:
             - .:/var/www/html
 
     mysql:
         image: mysql:8.4.4
+        networks:
+            - by-the-pixel-network
         ports:
             - "3306:3306"
         volumes:
@@ -34,6 +40,8 @@ services:
 
     redis:
         image: redis:7.4.2-alpine
+        networks:
+            - by-the-pixel-network
         ports:
             - "6379:6379"
         volumes:
